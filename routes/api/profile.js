@@ -5,7 +5,8 @@ const passport = require('passport');
 
 // Load Validation
 const validateProfileInput = require('../../validation/profile');
-const valideateExperienceInput = require('../../validation/experience');
+const validateExperienceInput = require('../../validation/experience');
+const validateEducationInput = require('../../validation/education');
 
 // Load Models
 const Profile = require('../../models/Profile');
@@ -161,7 +162,7 @@ router.post('', passport.authenticate('jwt', { session: false }), (req, res) => 
 // @desc 	Add experience to user's profile
 // @access 	Private
 router.post('/experience', passport.authenticate('jwt', { session: false }), (req, res) => {
-	const { errors, isValid } = valideateExperienceInput(req.body);
+	const { errors, isValid } = validateExperienceInput(req.body);
 
 	// Check validation
 	if(!isValid) {
@@ -187,4 +188,33 @@ router.post('/experience', passport.authenticate('jwt', { session: false }), (re
 	})
 });
 
+// @route 	POST api/profile/education
+// @desc 	Add education to user's profile
+// @access 	Private
+router.post('/education', passport.authenticate('jwt', { session: false }), (req, res) => {
+	const { errors, isValid } = validateEducationInput(req.body);
+
+	// Check validation
+	if(!isValid) {
+		return res.status(400).json(errors);
+	}
+
+	Profile.findOne( { user: req.user.id })
+	.then(profile => {
+		const newEdu = {
+			school: req.body.school,
+			degree: req.body.degree,
+			fieldofstudy: req.body.fieldofstudy,
+			from: req.body.from,
+			to: req.body.to,
+			current: req.body.current,
+			description: req.body.description
+		}
+
+		// Add to exp array
+		profile.education.unshift(newEdu);  //unshift adds to beginning of array unlike push which adds to end
+
+		profile.save().then(profile => res.json(profile));
+	})
+});
 module.exports = router;
