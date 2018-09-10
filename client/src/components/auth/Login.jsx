@@ -7,23 +7,19 @@ class Login extends Component {
 			email: "",
 			password: ""
 		};
-
-		// Rather than adding .bind(this) to each change event
-		this.onChange = this.onChange.bind(this);
-		this.onSubmit = this.onSubmit.bind(this);
 	}
 
 	// Handler for Change events setting the state for each input on change
 	// Since we are using for multiple fields
 	// [e.target.name] will be the name for each field eg. email, password
 	// e.target value will be the value of each field
-	onChange(e) {
+	onChange = e => {
 		this.setState({
 			[e.target.name]: e.target.value
 		});
-	}
+	};
 
-	onSubmit(e) {
+	onSubmit = e => {
 		e.preventDefault();
 
 		const loginInfo = {
@@ -32,7 +28,7 @@ class Login extends Component {
 		};
 
 		console.log(loginInfo);
-	}
+	};
 
 	render() {
 		return (
