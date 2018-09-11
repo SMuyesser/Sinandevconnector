@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import classnames from "classnames";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
 
 class Register extends Component {
 	constructor() {
@@ -12,6 +15,14 @@ class Register extends Component {
 			password2: "",
 			errors: {}
 		};
+	}
+
+	// We get errors from redux state and gets put into props with mapstatetoprops
+	// once recieve new properties and errors is included, then it gets set to component state
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.errors) {
+			this.setState({ errors: nextProps.errors });
+		}
 	}
 
 	// Handler for Change events setting the state for each input on change
@@ -34,10 +45,8 @@ class Register extends Component {
 			password2: this.state.password2
 		};
 
-		axios
-			.post("/api/users/register", newUser)
-			.then(res => console.log(res.data))
-			.catch(err => this.setState({ errors: err.response.data }));
+		// Second parameter allows us to use this.props.history to redicrect from within the action
+		this.props.registerUser(newUser, this.props.history);
 	};
 
 	render() {
@@ -153,4 +162,20 @@ class Register extends Component {
 	}
 }
 
-export default Register;
+Register.propTypes = {
+	registerUser: PropTypes.func.isRequired,
+	auth: PropTypes.object.isRequired,
+	errors: PropTypes.object.isRequired
+};
+
+// function that puts the auth state into this.props.auth
+// property auth on left and reducer auth on right
+const mapStateToProps = state => ({
+	auth: state.auth,
+	errors: state.errors
+});
+
+export default connect(
+	mapStateToProps,
+	{ registerUser }
+)(withRouter(Register));
