@@ -24,6 +24,12 @@ class Login extends Component {
 		});
 	};
 
+	componentDidMount() {
+		if (this.props.auth.isAuthenticated) {
+			this.props.history.push("/dashboard");
+		}
+	}
+
 	// We get errors from redux state and gets put into props with mapstatetoprops
 	// once recieve new properties and errors is included, then it gets set to component state
 	componentWillReceiveProps(nextProps) {
