@@ -4,7 +4,7 @@ class ProfileGithub extends Component {
 	render() {
 		return (
 			<div>
-				<h1>Github Here</h1>
+				<h1>{this.props.username}</h1>
 			</div>
 		);
 	}
