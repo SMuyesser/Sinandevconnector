@@ -18,6 +18,16 @@ class PostItem extends Component {
     this.props.removeLike(id);
   };
 
+  findUserLike(likes) {
+    const { auth } = this.props;
+
+    if(likes.filter(like => like.user === auth.user.id).length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 	render() {
 		const { post, auth } = this.props;
 		return (
@@ -33,12 +43,22 @@ class PostItem extends Component {
                 </div>
                 <div className="col-md-10">
                   <p className="lead">{post.text}</p>
-                  <button type="button" className="btn btn-light mr-1">
-                    <i onClick={this.onLikeClick.bind(this, post._id)} className="text-info fas fa-thumbs-up"></i>
+                  <button 
+                    type="button" 
+                    className="btn btn-light mr-1"
+                    onClick={this.onLikeClick.bind(this, post._id)}
+                  >
+                    <i className={classnames('fas fa-thumbs-up', {
+                      'text-info': this.findUserLike(post.likes)
+                    })} />
                     <span className="badge badge-light">{post.likes.length}</span>
                   </button>
-                  <button type="button" className="btn btn-light mr-1">
-                    <i onClick={this.onUnlikeClick.bind(this, post._id)} className="text-secondary fas fa-thumbs-down"></i>
+                  <button 
+                    type="button" 
+                    className="btn btn-light mr-1"
+                    onClick={this.onUnlikeClick.bind(this, post._id)}
+                  >
+                    <i className="text-secondary fas fa-thumbs-down"></i>
                   </button>
                   <Link to={`/post/${post._id}`} className="btn btn-info mr-1">
                     Comments
